@@ -6,7 +6,11 @@ session_start();
   $inEmail = "";
   $inComments= "";
   $inSelect = "";
-$inUser="";
+  $inMailing= "";
+  $inInfo= "";
+ $inUser="";
+ $contactDate="";
+ $contactTime="";
   //error messages
   $nameErrMsg = "";
   $emailErrMsg = "";
@@ -28,7 +32,11 @@ if(isset($_POST["submit"]))
   $inEmail = $_POST['inEmail'];
   $inSelect = $_POST['inSelect'];
   $inComments = $_POST['inComments'];
+  $inMailing= $_POST['checkbox'];
+  $inInfo=  $_POST['checkbox2'];
   $inUser=$_POST['g-recaptcha-response'];
+  $contactDate= date('Y-m-d');
+  $contactTime=date('H:i:s');
   /*	FORM VALIDATION PLAN
 
   The page will validate the form fields according to the following validation tests.
@@ -162,6 +170,69 @@ validateUser($inUser);
   }
 
 
+
+  if ($validForm == true) {
+
+
+    $serverName = "localhost";
+    $username = "adamloga_root";
+    $password = "password";
+    $database = "adamloga_contactform";
+
+    try {
+        $conn = new PDO("mysql:host=$serverName;dbname=$database", $username, $password);
+        // set the PDO error mode to exception
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        //echo "Connected successfully";
+        }
+    catch(PDOException $e)
+        {
+        echo "Connection failed: " . $e->getMessage();
+        }
+
+  		//Create the SQL command string
+  		$sql = "INSERT INTO contactform_table (";
+  		$sql .= "contact_name, ";
+  		$sql .= "contact_email, ";
+  		$sql .= "contact_reason, ";
+  		$sql .= "contact_comments, ";
+      $sql .= "contact_mailingList, ";
+  		$sql .= "contact_moreInfo, ";
+      $sql .= "contact_date, ";
+      $sql .= "contact_time ";	  //Last column does NOT have a comma after it.
+  		$sql .= ") VALUES (?,?,?,?,?,?,?,?)";	//? Are placeholders for variables
+
+  		//Display the SQL command to see if it correctly formatted.
+  		//echo "<p>$sql</p>";
+
+  		$query = $conn->prepare($sql);	//Prepares the query statement
+
+  		//Binds the parameters to the query.
+  		//The ssssis are the data types of the variables in order.
+
+
+      $query->bindParam(2, $inName, PDO::PARAM_STR, 100);
+      $query->bindParam(3, $inEmail, PDO::PARAM_STR, 100);
+      $query->bindParam(4, $inComments, PDO::PARAM_STR, 100);
+      $query->bindParam(5, $inSelect, PDO::PARAM_STR, 100);
+      $query->bindParam(6, $inMailing, PDO::PARAM_STR, 100);
+      $query->bindParam(6, $inInfo, PDO::PARAM_STR, 100);
+      $query->bindParam(6, $contact_date, PDO::PARAM_STR, 100);
+      $query->bindParam(6, $contact_time, PDO::PARAM_STR, 100);
+  		//Run the SQL prepared statements
+  		if ( $query->execute(array($inName, $inEmail, $inComments, $inSelect, $inMailing, $inInfo, $contactDate, $contactTime) ))
+  		{
+  		$message = "<h1>Your record has been successfully added to the database.</h1>";
+
+  		}
+  		else
+  		{
+  		$message = "<h1>You have encountered a problem.</h1>";
+
+  		}
+  $query=null;
+  $conn=null;	//closes the connection to the database once this page is complete.
+}
 }// ends if submit
 else
 {
