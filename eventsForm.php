@@ -1,7 +1,18 @@
 <?php
 session_start();
-//if ($_SESSION['validUser'] == "yes")	//If this is a valid user allow access to this page
-//{
+if ($_SESSION['validUser'] == "yes")	//If this is a valid user allow access to this page
+{
+
+  $message = "Welcome Back--" . " " . $_POST['loginUsername'] ;	//Create greeting for VIEW area
+}
+else{
+  //invalid user
+
+  header('Location: login.php');
+}
+
+
+
 
 
 	//Setup the variables used by the page
@@ -292,6 +303,9 @@ if ($validForm == true) {
     else	//display form
     {
       ?>
+
+			<?php print "<h1> $message</h1>"; ?>
+
 			<div id = "container" >
   <form class="form" action="eventsForm.php" method="post">
     <h1 id = "header">Insert an Event!</h1>

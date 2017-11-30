@@ -1,6 +1,18 @@
 <?php
 session_start();
 
+if ($_SESSION['validUser'] == "yes")	//If this is a valid user allow access to this page
+{
+
+  $message = "Welcome Back--" . " " . $_POST['loginUsername'] ;	//Create greeting for VIEW area
+}
+else{
+  //invalid user
+
+  header('Location: login.php');
+}
+
+
 $serverName = "localhost";
 $username = "adamloga_root";
 $password = "password";

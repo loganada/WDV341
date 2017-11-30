@@ -1,11 +1,20 @@
 <?php
 session_start();
 
+if ($_SESSION['validUser'] == "yes")	//If this is a valid user allow access to this page
+{
 
-  $serverName = "localhost";
-  $username = "adamloga_root";
-  $password = "password";
-  $dbname =  "adamloga_wdv341";
+  $message = "Welcome Back--" . " " . $_POST['loginUsername'] ;	//Create greeting for VIEW area
+}
+else{
+  //invalid user
+
+  header('Location: login.php');
+}
+
+    include 'connectPDO.php';				//Connect to the database
+
+
 
   echo "<tr>";
   echo "<td>$event_name</td>";
@@ -18,9 +27,6 @@ session_start();
   echo "</tr>\n";
 
   try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 
     $stmt = "SELECT COUNT(*)  FROM wdv341_event ";
     if ($res = $conn->query($stmt))
@@ -28,7 +34,7 @@ session_start();
           if ($res->fetchColumn() > 0) {
 
         echo  "  <table border='1'>
-        <caption>WDV 341 - Events Table</caption>
+        <caption>WDV 341 - Events Table<button> <a id = 'insert' href='eventsForm.php'>Insert a Event</a></button></caption>
             <tr>
               <th>Event Name</th>
               <th>Description</th>
@@ -50,6 +56,7 @@ session_start();
 
 }
 echo "</table>";
+
 }
 /* No rows matched -- do something else */
  else {
@@ -85,7 +92,7 @@ table{
 th, td {
     padding: 15px;
     font-size: 24px;
-    
+
       margin: 10px;
 }
 tr:hover {background-color: #b3b3b3}
@@ -98,10 +105,25 @@ caption
   margin: 5px;
   border-radius: 30px;
 }
+#insert:link, #insert:visited{
+
+color: black;
+  font-size: 20px;
+}
+button{
+  background-color: #ccffdc;
+  border: none;
+   padding: 15px 32px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   margin: 20px;
+}
 </style>
 </head>
 
 <body>
+  <?php print "<h1> $message</h1>"; ?>
 
 
 

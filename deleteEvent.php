@@ -1,14 +1,20 @@
 <?php
 session_start();
 
+if ($_SESSION['validUser'] == "yes")	//If this is a valid user allow access to this page
+{
+
+  //User is already signed on.  Skip the rest.
+  $message = "Welcome Back--" . " " . $_POST['loginUsername'] ;	//Create greeting for VIEW area
+}
+else{
+  //invalid user
+
+  header('Location: login.php');
+}
+
+    include 'connectPDO.php';				//Connect to the database
   $id= $_GET['recId'];	//Pull the presenter_id from the GET parameter
-  $serverName = "localhost";
-  $username = "adamloga_root";
-  $password = "password";
-  $dbname =  "adamloga_wdv341";
-  $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-  // set the PDO error mode to exception
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
   try{
 
@@ -16,8 +22,9 @@ session_start();
      $sql->execute (array(":id"=>$id));
 
      echo "Data successfully deleted in the database table ... ";
-     echo " <a href= selectEvents.php>Back to the table</a></td>" 
-     }catch(PDOException $e){
+     echo " <a href= selectEvents.php>Back to the table</a></td>";
+     }
+     catch(PDOException $e){
      echo "Failed to delete the MySQL database table ... :".$e->getMessage();
      }
 
